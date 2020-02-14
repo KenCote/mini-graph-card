@@ -198,6 +198,10 @@ const style = css`
     margin-right: .25rem;
     line-height: 1.2em;
   }
+  .state__header__uom {
+    font-size: .6em;
+    vertical-algin: bottom;
+  }
   .state__uom {
     flex: 1;
     align-self: flex-end;
@@ -213,13 +217,9 @@ const style = css`
     flex: 1;
   }
   .state__time {
-    font-size: .95rem;
     font-weight: 500;
-    bottom: -1.1rem;
-    left: 0;
-    opacity: .75;
-    position: absolute;
     white-space: nowrap;
+    vertical-align: bottom;
     animation: fade .15s cubic-bezier(0.215, 0.61, 0.355, 1);
   }
   .states[loc="right"] .state__time {

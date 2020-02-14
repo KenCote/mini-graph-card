@@ -182,19 +182,20 @@ class MiniGraphCard extends LitElement {
         style="font-size: ${config.font_size}px;"
         @click=${e => this.handlePopup(e, config.tap_action.entity || this.entity[0])}
       >
-        ${this.renderHeader()} ${this.renderStates()} ${this.renderGraph()} ${this.renderInfo()}
+        ${this.renderHeader()} ${this.renderGraph()} ${this.renderInfo()}
       </ha-card>
     `;
   }
 
   renderHeader() {
     const {
-      show, align_icon, align_header, font_size_header,
+      show, align_icon, font_size_header,
     } = this.config;
     return show.name || (show.icon && align_icon !== 'state')
       ? html`
-          <div class="header flex" loc=${align_header} style="font-size: ${font_size_header}px;">
+          <div class="header flex" style="font-size: ${font_size_header}px;">
             ${this.renderName()} ${align_icon !== 'state' ? this.renderIcon() : ''}
+            ${this.renderStates()} ${align_icon !== 'state' ? this.renderIcon() : ''}
           </div>
         `
       : '';
@@ -212,15 +213,19 @@ class MiniGraphCard extends LitElement {
 
   renderName() {
     if (!this.config.show.name) return;
+    const {
+      align_header,
+    } = this.config;
     const name = this.tooltip.entity !== undefined
       ? this.computeName(this.tooltip.entity)
       : this.config.name || this.computeName(0);
     const color = this.config.show.name_adaptive_color ? `opacity: 1; color: ${this.color};` : '';
 
     return html`
-      <div class="name flex">
-        <span class="ellipsis" style=${color}>${name}</span>
+      <div class="name flex" loc=${align_header}>
+        <span class="ellipsis" style=${color}>${name}</span>     
       </div>
+      ${this.renderStateTime()}
     `;
   }
 
@@ -230,16 +235,15 @@ class MiniGraphCard extends LitElement {
     const color = this.config.entities[0].state_adaptive_color ? `color: ${this.color};` : '';
     if (this.config.show.state)
       return html`
-        <div class="states flex" loc=${this.config.align_state}>
-          <div class="state">
-            <span class="state__value ellipsis" style=${color}>
+        <div class="name flex" loc=${this.config.align_state}>
+          <span>
+            <span class="ellipsis" style=${color}>
               ${this.computeState(state)}
             </span>
-            <span class="state__uom ellipsis" style=${color}>
+            <span class="state__header__uom ellipsis" style=${color}>
               ${this.computeUom(entity || 0)}
             </span>
-            ${this.renderStateTime()}
-          </div>
+          </span>
           <div class="states--secondary">${this.config.entities.map((ent, i) => this.renderState(ent, i))}</div>
           ${this.config.align_icon === 'state' ? this.renderIcon() : ''}
         </div>
@@ -269,7 +273,7 @@ class MiniGraphCard extends LitElement {
   renderStateTime() {
     if (this.tooltip.value === undefined) return;
     return html`
-      <div class="state__time">
+      <div class="name flex state__time">
         ${this.tooltip.label ? html`
           <span>${this.tooltip.label}</span>
         ` : html`
@@ -281,6 +285,7 @@ class MiniGraphCard extends LitElement {
   }
 
   renderGraph() {
+    
     return this.config.show.graph ? html`
       <div class="graph">
         <div class="graph__container">
